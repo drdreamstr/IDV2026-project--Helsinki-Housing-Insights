@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Helsinki Housing Architecture</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- MapLibre for Base Map -->
+  <link href="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.css" rel="stylesheet" />
+  <script src="https://unpkg.com/maplibre-gl@3.6.2/dist/maplibre-gl.js"></script>
+  <!-- Deck.GL -->
+  <script src="https://unpkg.com/deck.gl@8.9.33/dist.min.js"></script>
+  <!-- D3.js -->
+  <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <!-- ===== TOP: Map + Control Panel ===== -->
+  <div id="top-section">
+    <div id="map-container"></div>
+    
+    <!-- Floating info card for hover (replaces default tooltip) -->
+    <div id="info-card" class="info-card hidden">
+      <div id="info-card-content"></div>
+    </div>
+
+    <div id="control-panel">
+      <h1>Helsinki Housing Insights</h1>
+      <p class="subtitle">Socio-Economic Geography & Housing Affordability (2015–2025)</p>
+      
+      <div class="control-group">
+        <label for="year-slider">Timeline: <span id="year-label">2023</span></label>
+        <div class="timeline-row">
+          <button id="year-prev" class="year-btn" title="Previous year">◀</button>
+          <input type="range" id="year-slider" min="2015" max="2025" value="2023" step="1">
+          <button id="year-next" class="year-btn" title="Next year">▶</button>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label for="area-search">Find Area / Postal Code:</label>
+        <input type="text" id="area-search" placeholder="e.g. 00100 or Töölö" autocomplete="off" class="text-input">
+        <div id="search-results" class="dropdown-results"></div>
+        <div id="active-tags" class="tags-container"></div>
+      </div>
+
+      <div class="control-group overlays">
+        <h3>Map Settings & Overlays</h3>
+        <label class="toggle-switch">
+          <input type="checkbox" id="toggle-3d">
+          <span class="slider round"></span>
+          <span class="label-text">3D Extrusion (Height = Sales)</span>
+        </label>
+        <label class="toggle-switch">
+          <input type="checkbox" id="toggle-housing-prod">
+          <span class="slider round"></span>
+          <span class="label-text">Housing Production (2020–2023)</span>
+        </label>
+        <label class="toggle-switch">
+          <input type="checkbox" id="toggle-city-plans">
+          <span class="slider round"></span>
+          <span class="label-text">New City Plans Boundaries</span>
+        </label>
+      </div>
+
+      <div class="legend">
+        <h4>Price per m² (Color)</h4>
+        <div class="color-ramp"></div>
+        <div class="color-labels">
+          <span>€2k</span>
+          <span>€5k</span>
+          <span>€9k+</span>
+        </div>
+        <p class="extrude-note">⬆ Height = Number of sales &nbsp;|&nbsp; 🔵 Bubble size = Population</p>
+      </div>
+    </div>
+    <!-- Map control hints -->
+    <div id="map-hints" class="map-hints">
+      <span>🖘 Click area to select</span>
+      <span>🖱 Drag to pan</span>
+      <span>⚲ Scroll to zoom</span>
+      <span>⌃ Ctrl+Drag to rotate/tilt</span>
+    </div>
+  </div>
+
+  <!-- ===== BOTTOM: Analytics Panel ===== -->
+  <div id="analytics-panel" class="analytics-panel">
+    <div class="analytics-header">
+      <h2 id="analytics-title">📊 Helsinki Metropolitan Overview</h2>
+      <p id="analytics-hint" class="analytics-hint">Showing region-wide summary. Select specific areas above for comparison.</p>
+    </div>
+    <div class="charts-row">
+      <div class="chart-card">
+        <h4>Price Trend (€/m²)</h4>
+        <div id="chart-price-trend" class="chart-slot"></div>
+      </div>
+      <div class="chart-card">
+        <h4>Sales Volume</h4>
+        <div id="chart-sales-volume" class="chart-slot"></div>
+      </div>
+      <div class="chart-card">
+        <h4>Average Income (€)</h4>
+        <div id="chart-income-trend" class="chart-slot"></div>
+      </div>
+      <div class="chart-card">
+        <h4>Market Demographics</h4>
+        <div class="select-wrapper">
+          <select id="metric-select">
+            <option value="price_vs_income">Price vs Avg Income</option>
+            <option value="price_vs_pop">Price vs Population</option>
+            <option value="price_vs_distance">Price vs Distance to Center</option>
+          </select>
+        </div>
+        <div id="scatterplot" class="chart-slot"></div>
+      </div>
+      <div class="chart-card">
+        <h4>Housing Tenure (%)</h4>
+        <div id="chart-tenure" class="chart-slot"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./main.js"></script>
+</body>
+</html>
